@@ -12,31 +12,34 @@ const addDeleteGetLocalStorage = (
   addType = "multiple"
 ) => {
   if (type == "add") {
+    //add to the local
     if (addType == "single") {
-      // console.log("single ", name, " - ", dataObj)
+      // encrypt and store to the local with key
       let en = encryptDcrypt(
         "en",
         typeof dataObj == "object" ? JSON.stringify(dataObj) : dataObj
       );
       localStorage.setItem(name, en);
     } else {
-      // console.log("multiple ", name, " - ", dataObj)
+      //find same key in the local
       let getItem = localStorage.getItem(name);
+      // if data present in the local then encrypt and push to the array
       if (getItem != undefined) {
         let de = encryptDcrypt("de", getItem);
         let parse = JSON.parse(de);
         let a = Array.from(parse);
         a.push(dataObj);
-        // console.log("add ", a);
         let t = encryptDcrypt("en", JSON.stringify(a));
         localStorage.setItem(name, t);
       } else {
-        // console.log("add else ", dataObj);
+        // if not present in the local then create new encrypt array and store to the local
         let en = encryptDcrypt("en", JSON.stringify([dataObj]));
         localStorage.setItem(name, en);
       }
     }
   } else if (type == "get") {
+    //get from the local
+
     try {
       let g = localStorage.getItem(name);
       let d = encryptDcrypt("de", g);
@@ -45,14 +48,14 @@ const addDeleteGetLocalStorage = (
       return null;
     }
   } else if (type == "delete") {
+    //delete from local
     localStorage.removeItem(name);
   } else {
-    // console.log("data obj remove  ", dataObj);
-
+    //find obj present in the multiple data if present
+    //then removes from array and update local
     let getItem = localStorage.getItem(name);
     if (getItem != undefined) {
       let de = encryptDcrypt("de", getItem);
-      // console.log("de ",de);
       let parse = JSON.parse(de);
       let a = Array.from(parse);
       let l = [];
@@ -61,7 +64,7 @@ const addDeleteGetLocalStorage = (
           l.push(obj);
         }
       });
-      console.log("delete ", l);
+      // console.log("delete ", l);
       let t = encryptDcrypt("en", JSON.stringify(l));
       localStorage.setItem(name, t);
     } else {
